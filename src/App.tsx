@@ -256,14 +256,34 @@ const Future = () => {
   );
 };
 
+const CalendarView = () => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="w-full aspect-[4/5] md:aspect-video rounded-[2.5rem] overflow-hidden glass p-1"
+  >
+    <iframe
+      src="https://api.leadconnectorhq.com/widget/booking/hdJhRdZfW9d5kecFMVUN"
+      style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden' }}
+      scrolling="no"
+      id="hdJhRdZfW9d5kecFMVUN_1773059580963"
+      title="Booking Calendar"
+    />
+  </motion.div>
+);
+
 const JoinMe = () => {
   const [formState, setFormState] = useState({ name: '', email: '', phone: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+    // Smoothly transition to calendar after showing "Message Sent" for a moment
+    setTimeout(() => {
+      setShowCalendar(true);
+    }, 1500);
   };
 
   return (
@@ -321,56 +341,82 @@ const JoinMe = () => {
           </div>
         </div>
 
-        <div className="glass p-8 md:p-10 rounded-[2.5rem]">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-xs uppercase tracking-widest text-white/40 ml-1">Name</label>
-              <input 
-                type="text" 
-                required
-                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500/50 transition-colors"
-                placeholder="Your name"
-                value={formState.name}
-                onChange={e => setFormState({...formState, name: e.target.value})}
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs uppercase tracking-widest text-white/40 ml-1">Email</label>
-              <input 
-                type="email" 
-                required
-                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500/50 transition-colors"
-                placeholder="your@email.com"
-                value={formState.email}
-                onChange={e => setFormState({...formState, email: e.target.value})}
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs uppercase tracking-widest text-white/40 ml-1">Phone</label>
-              <input 
-                type="tel" 
-                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500/50 transition-colors"
-                placeholder="+1 (555) 000-0000"
-                value={formState.phone}
-                onChange={e => setFormState({...formState, phone: e.target.value})}
-              />
-            </div>
-            
-            <button 
-              type="submit"
-              disabled={submitted}
-              className={`w-full py-4 rounded-2xl font-medium flex items-center justify-center gap-2 transition-all duration-500 ${
-                submitted ? 'bg-emerald-500 text-white' : 'bg-white text-black hover:bg-blue-500 hover:text-white'
-              }`}
-            >
-              {submitted ? 'Message Sent' : 'Submit'}
-              {!submitted && <ArrowRight size={18} />}
-            </button>
-            
-            <p className="text-[10px] text-center text-white/30 uppercase tracking-widest">
-              I’ll only use this to stay in touch—no spam.
-            </p>
-          </form>
+        <div className="relative min-h-[500px] flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            {!showCalendar ? (
+              <motion.div
+                key="form"
+                initial={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20, filter: 'blur(10px)' }}
+                transition={{ duration: 0.5 }}
+                className="w-full glass p-8 md:p-10 rounded-[2.5rem]"
+              >
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-xs uppercase tracking-widest text-white/40 ml-1">Name</label>
+                    <input 
+                      type="text" 
+                      required
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500/50 transition-colors"
+                      placeholder="Your name"
+                      value={formState.name}
+                      onChange={e => setFormState({...formState, name: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs uppercase tracking-widest text-white/40 ml-1">Email</label>
+                    <input 
+                      type="email" 
+                      required
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500/50 transition-colors"
+                      placeholder="your@email.com"
+                      value={formState.email}
+                      onChange={e => setFormState({...formState, email: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs uppercase tracking-widest text-white/40 ml-1">Phone</label>
+                    <input 
+                      type="tel" 
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500/50 transition-colors"
+                      placeholder="+1 (555) 000-0000"
+                      value={formState.phone}
+                      onChange={e => setFormState({...formState, phone: e.target.value})}
+                    />
+                  </div>
+                  
+                  <button 
+                    type="submit"
+                    disabled={submitted}
+                    className={`w-full py-4 rounded-2xl font-medium flex items-center justify-center gap-2 transition-all duration-500 ${
+                      submitted ? 'bg-emerald-500 text-white' : 'bg-white text-black hover:bg-blue-500 hover:text-white'
+                    }`}
+                  >
+                    {submitted ? 'Message Sent' : 'Submit'}
+                    {!submitted && <ArrowRight size={18} />}
+                  </button>
+                  
+                  <p className="text-[10px] text-center text-white/30 uppercase tracking-widest">
+                    I’ll only use this to stay in touch—no spam.
+                  </p>
+                </form>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="calendar"
+                initial={{ opacity: 0, x: 20, filter: 'blur(10px)' }}
+                animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="w-full"
+              >
+                <div className="text-center mb-8">
+                  <h4 className="text-2xl font-serif italic mb-2">Book a Session</h4>
+                  <p className="text-white/40 text-sm">Choose a time that works best for you.</p>
+                </div>
+                <CalendarView />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </motion.div>
